@@ -1,0 +1,16 @@
+    <h1>Analysis stats
+    <!--Contenedor-->
+    <div id="container">
+        <!--Pestaña 1 activa por defecto-->
+        $forall Entity chapterIdD chapter <- chapters
+            <input id="tab-#{fromSqlKey chapterIdD}" type="radio" name="tab-group" :chapterId == (fromSqlKey chapterIdD):checked>
+            <label for="tab-#{fromSqlKey chapterIdD}">#{chapterName chapter}
+
+        <div id="content">
+            <div id="content-1">
+                <progress max=100 value=#{sectionsPercent}>
+                <br>
+                <p>#{sectionsDone}
+                $forall Entity sectionIdD section <- sections
+                    <p>#{chapterId}.#{fromSqlKey sectionIdD} - #{sectionName section}
+           

@@ -1,0 +1,33 @@
+    <h1>Analysis stats
+    <!--Contenedor-->
+    <div #topContainer .container>
+        <p>Total Progress:
+        <progress #mainProgress max=100 value=#{allSectionsPercent}>
+        <div>#{allSectionsPercent}
+
+    <div #container .container>
+        $forall Entity chapterIdD chapter <- chapters
+            <input id="tab-#{fromSqlKey chapterIdD}" type="radio" onclick="location.href='#{fromSqlKey chapterIdD}'" name="tab-group" :chapterId == (fromSqlKey chapterIdD):checked>
+            <label for="tab-#{fromSqlKey chapterIdD}">
+                $if chapterId == (fromSqlKey chapterIdD)
+                    #{chapterName chapter} 
+                $else
+                    #{fromSqlKey chapterIdD}
+
+        <div id="content">
+            <div id="content-1">
+                <p> Chapter #{chapterId} progress:
+                <progress #chapterProgress max=100 value=#{sectionsPercent}>
+                <div>#{sectionsPercent}
+                <button #startTestButton onclick="loadNewTest()">Start Test
+                <button #showResultButton onclick="showResult()" hidden>Show Result
+                <div #sectionTest>
+                <button #sectionsToggleButton onClick="toggleSections()">+
+                <div #sectionsDiv hidden>
+                    $forall Entity sectionIdD section <- sections
+                        <p>#{chapterId}.#{sectionNumber section}  
+                            $maybe name <- sectionName section
+                                - #{name} 
+
+
+           

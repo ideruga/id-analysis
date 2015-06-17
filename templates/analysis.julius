@@ -1,0 +1,34 @@
+$(document).ready(function() {
+    lastSection = 0
+    currentChapter = #{rawJS $ show chapterId}
+})
+
+function toggleSections() {
+    if ($('#sectionsDiv').prop('hidden')) {
+        $('#sectionsDiv').prop('hidden', null)
+        $('#sectionsToggleButton').html('-')
+    } else {
+        $('#sectionsDiv').prop('hidden', true)
+        $('#sectionsToggleButton').html('+')
+    }
+}
+
+function loadNewTest() {
+    $.ajax({
+        url: "/analysis/test/" + currentChapter + "/" + lastSection + "/" + Math.random(),
+        context: document.body,
+        dataType: 'json'
+    }).success(function(str) {
+        var result = $.parseJSON(str);
+        console.debug(result)
+        lastSection = result.sectionNumber
+        lastSectionName = result.sectionName
+        $('#sectionTest').html(currentChapter + "." + lastSection);
+        $('#startTestButton').html("Next Test")
+        $('#showResultButton').prop('hidden', null)
+    });
+}
+
+function showResult() {
+    $('#sectionTest').html(currentChapter + "." + lastSection + ": " + lastSectionName);
+}
