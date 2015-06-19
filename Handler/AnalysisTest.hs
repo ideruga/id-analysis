@@ -22,13 +22,14 @@ import Network.HTTP.Conduit    (RequestBody (RequestBodyLBS),
 
 getAnalysisTestR :: Int -> Int -> Text -> Handler RepPlain
 getAnalysisTestR chapter currentSection rndText = do 
-    sections <- runDB $ selectList [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionDone ==. True, SectionId !=. toSqlKey (fromIntegral currentSection)] []
+    sections <- runDB $ selectList [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionDone ==. True, SectionNumber !=. fromIntegral currentSection] []
     let rndDouble = read (Data.Text.unpack rndText) :: Double
     let rndInt = floor $ rndDouble*(realToFrac $ length $ map entityVal sections)
     let randomSectionEntity = sections!!rndInt
     let (Entity randomSectionId randomSection) = randomSectionEntity
     let randomSectionName = maybe "-" (\ x -> x) $ sectionName randomSection
-    return $ RepPlain . toContent $ show $ encode $ Test {newSectionName = randomSectionName, newSectionNumber = fromIntegral $ fromSqlKey randomSectionId, chapterNumber = chapter}
+    let randomSectionDescription = maybe "-" (\ x -> x) $ sectionDescription randomSection
+    return $ RepPlain . toContent $ show $ encode $ Test {newSectionName = randomSectionName, newSectionDescription = randomSectionDescription, newSectionNumber = fromIntegral $ sectionNumber randomSection, chapterNumber = chapter}
         --Nothing -> return RepPlain . toContent $ show $ encode $ Test {newSectionName = "woops", newSectionNumber = 0, chapterNumber = chapter} 
         
     --res <- runDB $ rawQuery "SELECT count(*) cnt, sum(CASE WHEN done THEN 1 ELSE 0 END) sm FROM SECTION" [] $$ CL.map (convertFromPersistent) =$ CL.consume
@@ -47,7 +48,7 @@ getAnalysisTestR chapter currentSection rndText = do
             --where s = "SELECT ?? FROM section WHERE chapterId = ? AND done = true OFFSET random()*? LIMIT 1"
 
 data Test = Test
-    { newSectionName :: Text, newSectionNumber :: Int, chapterNumber :: Int} deriving Show
+    { newSectionName :: Text, newSectionDescription :: Text, newSectionNumber :: Int, chapterNumber :: Int} deriving Show
 instance ToJSON Test where
-    toJSON (Test newSectionName newSectionNumber chapterNumber) = object ["sectionName" .= newSectionName, "sectionNumber" .= newSectionNumber, "chapterNumber" .= chapterNumber]
+    toJSON (Test newSectionName newSectionDescription newSectionNumber chapterNumber) = object ["sectionName" .= newSectionName, "sectionDescription" .= newSectionDescription, "sectionNumber" .= newSectionNumber, "chapterNumber" .= chapterNumber]
 

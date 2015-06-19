@@ -32,12 +32,11 @@ insert into section (id, chapter_id, number, name, description, done) values (10
 insert into section (id, chapter_id, number, name, description, done) values (11, 1, 14, 'Measurability of sup f_n and lim sup f_n', null, true);  
 insert into section (id, chapter_id, number, name, description, done) values (12, 1, 15, 'Positive and negative parts of f', null, true);  
 insert into section (id, chapter_id, number, name, description, done) values (13, 1, 16, 'Simple functions', 'Simple function, non-negative simple function', true);  
-insert into section (id, chapter_id, number, name, description, done) values (14, 1, 17, 'Theorem: non-negative measurable function as a limit of simple functions', null, true);  
-insert into section (id, chapter_id, number, name, description, done) values (15, 1, 18, 'Measure', 'Positive measure, measure space, complex measure', false);  
-insert into section (id, chapter_id, number, name, description, done) values (16, 1, 19, 'Theorem: five properties of a measure', null, false);  
+insert into section (id, chapter_id, number, name, description, done) values (14, 1, 17, 'Theorem: non-negative measurable function as a limit of simple functions', null, false);  
+insert into section (id, chapter_id, number, name, description, done) values (15, 1, 18, 'Measure', 'Positive measure, measure space, complex measure', true);  
+insert into section (id, chapter_id, number, name, description, done) values (16, 1, 19, 'Theorem: five properties of a measure', null, true);  
 insert into section (id, chapter_id, number, name, description, done) values (17, 1, 20, 'Examples of measures', 'Counting measure, unit mass measure', false);  
-insert into section (id, chapter_id, number, name, description, done) values (18, 1, 22, null, null, false);  
-insert into section (id, chapter_id, number, name, description, done) values (19, 1, 23, null, null, false);  
+insert into section (id, chapter_id, number, name, description, done) values (19, 1, 23, 'Simple function', 'Definition of a measurable simple function s, integral of s on E, integral of a measurable function f on E', false);  
 insert into section (id, chapter_id, number, name, description, done) values (20, 1, 24, null, null, false);  
 insert into section (id, chapter_id, number, name, description, done) values (21, 1, 25, null, null, false);  
 insert into section (id, chapter_id, number, name, description, done) values (22, 1, 26, null, null, false);  
