@@ -12,6 +12,7 @@ module Application
     , db
     ) where
 
+--import Helpers.Heroku
 import Control.Monad.Logger                 (liftLoc, runLoggingT)
 import Database.Persist.Postgresql          (createPostgresqlPool, pgConnStr,
                                              pgPoolSize, runSqlPool)
@@ -53,6 +54,15 @@ makeFoundation appSettings = do
     appStatic <-
         (if appMutableStatic appSettings then staticDevel else static)
         (appStaticDir appSettings)
+
+
+    --dbconf <- if development
+        -- default behavior when in development
+        --then withYamlEnvironment "config/postgresql.yml" (appEnv conf)
+            --Database.Persist.loadConfig >>=
+            --Database.Persist.applyEnv
+        --but parse DATABASE_URL in non-development
+        --else herokuConf
 
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a

@@ -79,6 +79,9 @@ h1 {
 #content div {
 	padding: 1.5em;
 }
+.sectionNameTrue {
+    color: #008800; 
+}
 
 #content-1 p {
 	clear: both;

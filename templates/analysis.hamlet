@@ -22,10 +22,11 @@
                 <button #startTestButton onclick="loadNewTest()">Start Test
                 <button #showResultButton onclick="showResult()" hidden>Show Result
                 <div #sectionTest>
+                <div #sectionTestDescription>
                 <button #sectionsToggleButton onClick="toggleSections()">+
                 <div #sectionsDiv hidden>
                     $forall Entity sectionIdD section <- sections
-                        <p>#{chapterId}.#{sectionNumber section}  
+                        <p class=sectionName#{sectionDone section}>#{chapterId}.#{sectionNumber section}  
                             $maybe name <- sectionName section
                                 - #{name} 
 

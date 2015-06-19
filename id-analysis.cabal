@@ -24,6 +24,7 @@ library
                      Handler.Home
                      Handler.AnalysisStats
                      Handler.AnalysisTest
+                     Helpers.Heroku
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -86,6 +87,7 @@ library
                  , conduit-extra
                  , transformers
                  , random
+                 , heroku
 
 executable         id-analysis
     if flag(library-only)
