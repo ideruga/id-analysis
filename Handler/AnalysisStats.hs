@@ -8,9 +8,16 @@ import Database.Persist.Sql
 import Data.List (length,filter)
 import Text.Julius (rawJS)
 import qualified Data.Conduit.List as CL
+import           Network.HTTP.Client.Conduit (Manager, newManager)
+import           Yesod
+import           Yesod.Auth
+import           Yesod.Auth.BrowserId
+import           Yesod.Auth.GoogleEmail
+
 
 getAnalysisStatsR :: Int64 -> Handler Html
 getAnalysisStatsR chapterId = do
+    maid <- maybeAuthId
     --res <- runDB $ rawQuery "SELECT count(*) cnt, sum(CASE WHEN done THEN 1 ELSE 0 END) sm FROM SECTION" [] $$ CL.map (convertFromPersistent) =$ CL.consume
     allSections <- runDB $ selectList ([] :: [Filter Section]) []
     let allSectionsTotal = length $ map entityVal allSections
@@ -31,9 +38,9 @@ getAnalysisStatsR chapterId = do
     let sectionsPercent = show $ toInteger $ floor tmp
     defaultLayout $(widgetFile "analysis")
 --    where 
---        convertFromPersistent [] = Nothing
---        convertFromPersistent [PersistInt64 sum,PersistInt64 category] = do
---            putStrLn (pack (show (sum)))
---            return (Just (sum,category))
---        convertFromPersistent _ = Nothing
+-- convertFromPersistent [] = Nothing
+-- convertFromPersistent [PersistInt64 sum,PersistInt64 category] = do
+-- putStrLn (pack (show (sum)))
+-- return (Just (sum,category))
+-- convertFromPersistent _ = Nothing
 

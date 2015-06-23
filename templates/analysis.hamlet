@@ -1,3 +1,10 @@
+    <p>Your current auth ID: #{show maid}
+        $maybe _ <- maid
+            <p>
+                <a href=@{AuthR LogoutR}>Logout
+        $nothing
+            <p>
+                <a href=@{AuthR LoginR}>Go to the login page
     <h1>Analysis stats
     <!--Contenedor-->
     <div #topContainer .container>
@@ -26,9 +33,12 @@
                 <button #sectionsToggleButton onClick="toggleSections()">+
                 <div #sectionsDiv hidden>
                     $forall Entity sectionIdD section <- sections
-                        <p class=sectionName#{sectionDone section}>#{chapterId}.#{sectionNumber section}  
+                        <div>
+                            $maybe _ <- maid
+                                <input class=sectionName#{sectionDone section} type=checkbox onclick="updateSectionStatus(#{fromSqlKey sectionIdD})" :(True == sectionDone section):checked>
+                            $nothing
+                                <p class=sectionName#{sectionDone section}>
+                            #{chapterId}.#{sectionNumber section}  
                             $maybe name <- sectionName section
                                 - #{name} 
-
-
            
