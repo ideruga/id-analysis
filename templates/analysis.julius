@@ -25,7 +25,7 @@ function loadNewTest() {
         lastSectionName = result.sectionName
         lastSectionDescription = result.sectionDescription
         $('#sectionTest').html(currentChapter + "." + lastSection);
-        $('#sectionTestDescription').html(undefined);
+        $('#sectionTestDescription').html('');
         $('#startTestButton').html("Next Test")
         $('#showResultButton').prop('hidden', null)
     });
