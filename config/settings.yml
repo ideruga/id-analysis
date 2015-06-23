@@ -20,8 +20,8 @@ ip-from-header: "_env:IP_FROM_HEADER:false"
 database:
   user:     "_env:PGUSER:id-analysis"
   password: "_env:PGPASS:id-analysis"
-  host:     "_env:PGHOST:localhost"
-  port:     "_env:PGPORT:5432"
+  host:     "_env:PGHOST:dry-garden-5364.herokuapp.com"
+  port:     "_env:PGPORT:80"
   database: "_env:PGDATABASE:id-analysis"
   poolsize: "_env:PGPOOLSIZE:10"
 
