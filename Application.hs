@@ -28,7 +28,11 @@ import Network.Wai.Middleware.RequestLogger (Destination (Logger),
                                              mkRequestLogger, outputFormat)
 import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
-
+import Text.Read (reads, read)
+import Control.Concurrent.Chan
+import System.Environment (getEnvironment)
+import Yesod
+import Yesod.Static
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
 import Handler.Common
@@ -108,7 +112,7 @@ makeApplication foundation = do
 
 -- | Warp settings for the given foundation value.
 warpSettings :: App -> Settings
-warpSettings foundation =
+warpSettings foundation = 
       setPort (appPort $ appSettings foundation)
     $ setHost (appHost $ appSettings foundation)
     $ setOnException (\_req e ->
@@ -124,7 +128,9 @@ warpSettings foundation =
 -- | For yesod devel, return the Warp settings and WAI Application.
 getApplicationDev :: IO (Settings, Application)
 getApplicationDev = do
+    putStrLn $ "BiG DEV TEST"
     settings <- getAppSettings
+    putStrLn $ pack $ show $ port settings
     foundation <- makeFoundation settings
     wsettings <- getDevSettings $ warpSettings foundation
     app <- makeApplication foundation
@@ -140,6 +146,7 @@ develMain = develMainHelper getApplicationDev
 -- | The @main@ function for an executable running this site.
 appMain :: IO ()
 appMain = do
+    putStrLn $ "BiG TEST"
     -- Get the settings from all relevant sources
     settings <- loadAppSettingsArgs
         -- fall back to compile-time values, set to [] to require values at runtime
@@ -147,6 +154,12 @@ appMain = do
 
         -- allow environment variables to override
         useEnv
+
+    env <- getEnvironment
+    let port = maybe 8080 read $ lookup "PORT" env
+    putStrLn $ pack $ "PORT VALUE: " ++ show port 
+    --putStrLn $ pack $ show $ port settings
+    --setPort $ port settings
 
     -- Generate the foundation from the settings
     foundation <- makeFoundation settings

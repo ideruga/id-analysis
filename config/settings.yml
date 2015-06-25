@@ -2,9 +2,9 @@
 # See https://github.com/yesodweb/yesod/wiki/Configuration#overriding-configuration-values-with-environment-variables
 
 static-dir:     "_env:STATIC_DIR:static"
-host:           "_env:HOST:dry-garden-5364.herokuapp.com" # any IPv4 host
+host:           "_env:HOST:*4" # any IPv4 host
 port:           "_env:PORT:3000"
-approot:        "_env:APPROOT:dry-garden-5364.herokuapp.com"
+approot:        "_env:APPROOT:http://192.168.2.27:3000"
 ip-from-header: "_env:IP_FROM_HEADER:false"
 
 # Optional values with the following production defaults.
@@ -20,8 +20,8 @@ ip-from-header: "_env:IP_FROM_HEADER:false"
 database:
   user:     "_env:PGUSER:id-analysis"
   password: "_env:PGPASS:id-analysis"
-  host:     "_env:PGHOST:dry-garden-5364.herokuapp.com"
-  port:     "_env:PGPORT:80"
+  host:     "_env:PGHOST:localhost"
+  port:     "_env:PGPORT:5432"
   database: "_env:PGDATABASE:id-analysis"
   poolsize: "_env:PGPOOLSIZE:10"
 
