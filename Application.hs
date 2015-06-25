@@ -130,7 +130,7 @@ getApplicationDev :: IO (Settings, Application)
 getApplicationDev = do
     putStrLn $ "BiG DEV TEST"
     settings <- getAppSettings
-    putStrLn $ pack $ show $ port settings
+    --putStrLn $ pack $ show $ port settings
     foundation <- makeFoundation settings
     wsettings <- getDevSettings $ warpSettings foundation
     app <- makeApplication foundation
@@ -158,8 +158,6 @@ appMain = do
     env <- getEnvironment
     let port = maybe 8080 read $ lookup "PORT" env
     putStrLn $ pack $ "PORT VALUE: " ++ show port 
-    --putStrLn $ pack $ show $ port settings
-    --setPort $ port settings
 
     -- Generate the foundation from the settings
     foundation <- makeFoundation settings
