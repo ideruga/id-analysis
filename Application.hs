@@ -158,7 +158,7 @@ appMain = do
     env <- getEnvironment
     let port = maybe 8080 read $ lookup "PORT" env
     putStrLn $ pack $ "PORT VALUE: " ++ show port 
-    let url = maybe "test" read $ lookup "DATABASE_URL" env
+    let url = maybe "test" lookup "DATABASE_URL" env
     putStrLn $ pack $ "URL VALUE: " ++ show url 
 
     -- Generate the foundation from the settings
