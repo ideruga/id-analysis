@@ -15,7 +15,7 @@ module Application
 --import Helpers.Heroku
 import Control.Monad.Logger                 (liftLoc, runLoggingT)
 import Database.Persist.Postgresql          (createPostgresqlPool, pgConnStr,
-                                             pgPoolSize, runSqlPool)
+                                             pgPoolSize, runSqlPool, PostgresConf(..))
 import Import
 import Language.Haskell.TH.Syntax           (qLocation)
 import Network.Wai.Handler.Warp             (Settings, defaultSettings,
@@ -39,6 +39,8 @@ import Handler.Common
 import Handler.Home
 import Handler.AnalysisStats
 import Handler.AnalysisTest
+import Web.Heroku (dbConnParams)
+import qualified Data.Text as T
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
@@ -81,8 +83,12 @@ makeFoundation appSettings = do
         logFunc = messageLoggerSource tempFoundation appLogger
 
     -- Create the database connection pool
+    params <- dbConnParams
+    let pgUrl = formatParams params
+
+    -- let pgUrl = lookup "DATABASE_URL" env
     pool <- flip runLoggingT logFunc $ createPostgresqlPool
-        (pgConnStr  $ appDatabaseConf appSettings)
+        pgUrl
         (pgPoolSize $ appDatabaseConf appSettings)
 
     -- Perform database migration using our application's logging settings.
@@ -90,6 +96,12 @@ makeFoundation appSettings = do
 
     -- Return the foundation
     return $ mkFoundation pool
+    where 
+        formatParams :: [(Text, Text)] -> ByteString
+        formatParams = encodeUtf8 . T.unwords . map toKeyValue
+
+toKeyValue :: (Text, Text) -> Text
+toKeyValue (k, v) = k `T.append` "=" `T.append` v
 
 -- | Convert our foundation to a WAI Application by calling @toWaiAppPlain@ and
 -- applyng some additional middlewares.
