@@ -13,6 +13,19 @@ function toggleSections() {
     }
 }
 
+function updateSectionStatus(sectionId) {
+    var url = "/analysis/uncheckSection/" + sectionId
+    if ($('#section-' + sectionId).is(':checked')) {
+        url = "/analysis/checkSection/" + sectionId
+    }
+    $.ajax({
+        url: url,
+        context: document.body,
+        dataType: 'json'
+    }).success(function(str) {
+    });
+}
+
 function loadNewTest() {
     $.ajax({
         url: "/analysis/test/" + currentChapter + "/" + lastSection + "/" + Math.random(),

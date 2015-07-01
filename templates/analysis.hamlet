@@ -1,3 +1,7 @@
+    $forall sect <- doneSections
+        <p>#{fromSqlKey sect}
+        
+    <p>Your current email: #{show emailAddr}
     <p>Your current auth ID: #{show maid}
         $maybe _ <- maid
             <p>
@@ -35,7 +39,7 @@
                     $forall Entity sectionIdD section <- sections
                         <div>
                             $maybe _ <- maid
-                                <input class=sectionName#{sectionDone section} type=checkbox onclick="updateSectionStatus(#{fromSqlKey sectionIdD})" :(True == sectionDone section):checked>
+                                <input class=sectionName#{sectionDone section} id="section-#{fromSqlKey sectionIdD}" type=checkbox onclick="updateSectionStatus(#{fromSqlKey sectionIdD})" :(elem sectionIdD doneSections):checked>
                             $nothing
                                 <p class=sectionName#{sectionDone section}>
                             #{chapterId}.#{sectionNumber section}  

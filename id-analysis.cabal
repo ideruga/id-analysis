@@ -24,6 +24,8 @@ library
                      Handler.Home
                      Handler.AnalysisStats
                      Handler.AnalysisTest
+                     Handler.CheckSection
+                     Handler.UncheckSection
                      Helpers.Heroku
 
     if flag(dev) || flag(library-only)

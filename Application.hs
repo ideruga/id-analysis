@@ -39,6 +39,9 @@ import Handler.Common
 import Handler.Home
 import Handler.AnalysisStats
 import Handler.AnalysisTest
+import Handler.UpdateSectionStatus
+import Handler.CheckSection
+import Handler.UncheckSection
 import Web.Heroku (dbConnParams)
 import qualified Data.Text as T
 
@@ -83,12 +86,10 @@ makeFoundation appSettings = do
         logFunc = messageLoggerSource tempFoundation appLogger
 
     -- Create the database connection pool
-    params <- dbConnParams
-    let pgUrl = formatParams params
 
     -- let pgUrl = lookup "DATABASE_URL" env
     pool <- flip runLoggingT logFunc $ createPostgresqlPool
-        pgUrl
+        (pgConnStr  $ appDatabaseConf appSettings) 
         (pgPoolSize $ appDatabaseConf appSettings)
 
     -- Perform database migration using our application's logging settings.
@@ -167,11 +168,11 @@ appMain = do
         -- allow environment variables to override
         useEnv
 
-    env <- getEnvironment
-    let port = maybe 8080 read $ lookup "PORT" env
-    putStrLn $ pack $ "PORT VALUE: " ++ show port 
-    let url = lookup "DATABASE_URL" env
-    putStrLn $ pack $ "URL VALUE: " ++ show url 
+    --env <- getEnvironment
+    --let port = maybe 8080 read $ lookup "PORT" env
+    --putStrLn $ pack $ "PORT VALUE: " ++ show port 
+    --let url = lookup "DATABASE_URL" env
+    --putStrLn $ pack $ "URL VALUE: " ++ show url 
 
     -- Generate the foundation from the settings
     foundation <- makeFoundation settings
