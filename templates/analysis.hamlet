@@ -37,7 +37,7 @@
                                         $maybe _ <- maid
                                             <td>
                                                 <input id="section-#{uiSectionId section}" type=checkbox onclick="updateSectionStatus(#{uiSectionId section})" :uiSectionDone section:checked>
-                                        <td>#{uiSectionId section}
+                                        <td>#{uiChapterId chapter}.#{uiSectionNumber section}
                                         <td>#{uiSectionName section}
                                         <td>#{uiSectionDescription section}
                                         <td>-

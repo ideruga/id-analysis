@@ -15,6 +15,7 @@ import           Yesod.Auth
 import           Yesod.Auth.BrowserId
 
 data UISection = UISection { uiSectionId :: Int
+    , uiSectionNumber :: Int
     , uiSectionName :: Text
     , uiSectionDescription :: Text
     , uiSectionDone :: Bool
@@ -50,6 +51,7 @@ getAnalysisStatsR chapterId = do
                    , uiChapterDescription = case chapterDescription ch of Nothing -> empty
                                                                           Just txt -> txt
                    , uiChapterSections = [UISection { uiSectionId = sectionKeyToInt seId
+                                                    , uiSectionNumber = sectionNumber se
                                                     , uiSectionName = case sectionName se of Nothing -> empty
                                                                                              Just name -> name
                                                     , uiSectionDescription = case sectionDescription se of Nothing -> empty
