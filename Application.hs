@@ -85,10 +85,12 @@ makeFoundation appSettings = do
         logFunc = messageLoggerSource tempFoundation appLogger
 
     -- Create the database connection pool
-
+    params <- dbConnParams
+    let pgUrl = formatParams params
     -- let pgUrl = lookup "DATABASE_URL" env
     pool <- flip runLoggingT logFunc $ createPostgresqlPool
-        (pgConnStr  $ appDatabaseConf appSettings) 
+        pgUrl
+        --(pgConnStr  $ appDatabaseConf appSettings) 
         (pgPoolSize $ appDatabaseConf appSettings)
 
     -- Perform database migration using our application's logging settings.
