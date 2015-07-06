@@ -2,9 +2,9 @@ module Handler.AnalysisTest where
 
 import Import hiding (length, withManager)
 import System.Random
-import Data.Text hiding (pack, map, length)
+import Data.Text hiding (pack, map, length, filter)
 import Text.Read (reads, read)
-import Data.List hiding (map, (++))
+import Data.List hiding (map, (++), filter, elem)
 import Data.Aeson (Value, encode, object, (.=))
 import Control.Monad.IO.Class  (liftIO)
 import Data.Aeson              (Value (Object, String))
@@ -22,10 +22,19 @@ import Network.HTTP.Conduit    (RequestBody (RequestBodyLBS),
 
 getAnalysisTestR :: Int -> Int -> Text -> Handler RepPlain
 getAnalysisTestR chapter currentSection rndText = do 
-    sections <- runDB $ selectList [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionDone ==. True, SectionNumber !=. fromIntegral currentSection] []
+    mauth <- maybeAuth
+    let emailAddr = case mauth of Nothing -> "nothing"
+                                  Just (Entity _ user) -> userIdent user 
+
+    doneSectionsDB <- runDB $ selectList [DoneSectionsUserIdent ==. emailAddr] []
+    let doneSections = map (doneSectionsSectionId . entityVal) doneSectionsDB
+    
+    sections <- runDB $ selectList [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionNumber !=. fromIntegral currentSection] []
+    let selectedSections = filter (\ x -> (entityKey x) `elem` doneSections) $ sections
+
     let rndDouble = read (Data.Text.unpack rndText) :: Double
-    let rndInt = floor $ rndDouble*(realToFrac $ length $ map entityVal sections)
-    let randomSectionEntity = sections!!rndInt
+    let rndInt = floor $ rndDouble*(realToFrac $ length selectedSections)
+    let randomSectionEntity = selectedSections!!rndInt
     let (Entity randomSectionId randomSection) = randomSectionEntity
     let randomSectionName = maybe "-" (\ x -> x) $ sectionName randomSection
     let randomSectionDescription = maybe "-" (\ x -> x) $ sectionDescription randomSection

@@ -19,8 +19,13 @@ $newline never
     \<!--[if lt IE 9]>
     \<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     \<![endif]-->
-
+    <link rel="stylesheet" href="/static/layout-default-latest.css">
+    <link rel="stylesheet" href="/static/jquery-ui-1.11.4.custom/jquery-ui.css">
+    <link rel="stylesheet" href="/static/jquery.dataTables.min.css">
     <script src="/static/jquery.min.js"></script>
+    <script src="/static/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+    <script src="/static/jquery.layout-latest.js"></script>
+    <script src="/static/jquery.dataTables.min.js"></script>
     <script>
       document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
   <body>

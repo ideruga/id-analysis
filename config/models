@@ -13,13 +13,11 @@ Email
 Chapter
     name Text
     description Text Maybe
-    done Bool
 Section
     chapterId ChapterId
     number Int
     name Text Maybe
     description Text Maybe
-    done Bool
 DoneSections
     sectionId SectionId
     userIdent Text

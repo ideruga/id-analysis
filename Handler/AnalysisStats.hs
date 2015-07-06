@@ -2,10 +2,11 @@ module Handler.AnalysisStats where
 
 import Import hiding (length,filter)
 import Data.Map (Map)
+import Data.Text (empty)
 import Data.Maybe
 import Database.Persist
 import Database.Persist.Sql
-import Data.List (length,filter)
+import Data.List (length,filter, genericLength)
 import Text.Julius (rawJS)
 import qualified Data.Conduit.List as CL
 import           Network.HTTP.Client.Conduit (Manager, newManager)
@@ -13,6 +14,20 @@ import           Yesod
 import           Yesod.Auth
 import           Yesod.Auth.BrowserId
 
+data UISection = UISection { uiSectionId :: Int
+    , uiSectionName :: Text
+    , uiSectionDescription :: Text
+    , uiSectionDone :: Bool
+}
+
+data UIChapter = UIChapter { uiChapterId :: Int    
+    , uiChapterName :: Text
+    , uiChapterDescription :: Text
+    , uiChapterSections :: [UISection]
+    , uiChapterProgress :: Int
+}
+sectionChecked :: UISection -> Bool
+sectionChecked section = uiSectionDone section
 
 getAnalysisStatsR :: Int64 -> Handler Html
 getAnalysisStatsR chapterId = do
@@ -22,28 +37,48 @@ getAnalysisStatsR chapterId = do
     $(logInfo) $ "authentication: " ++ (pack (show emailAddr))
     maid <- maybeAuthId
 
+    let abc = True
+    sections <- runDB $ selectList ([] :: [Filter Section]) []
+
     doneSectionsDB <- runDB $ selectList [DoneSectionsUserIdent ==. emailAddr] []
     let doneSections = map (doneSectionsSectionId . entityVal) doneSectionsDB
-    $(logInfo) $ "allSectionsDone: " ++ (pack . show . length) doneSections
-
-    --res <- runDB $ rawQuery "SELECT count(*) cnt, sum(CASE WHEN done THEN 1 ELSE 0 END) sm FROM SECTION" [] $$ CL.map (convertFromPersistent) =$ CL.consume
-    allSections <- runDB $ selectList ([] :: [Filter Section]) []
-    let allSectionsTotal = length allSections
-    $(logInfo) $ "allSectionsTotal value: " ++ (pack (show allSectionsTotal))
-    let tmp0 = (toRational 100)*((toRational . length) doneSections)/(toRational allSectionsTotal)
-    let allSectionsPercent = show $ toInteger $ floor tmp0
 
 
     chapters <- runDB $ selectList ([] :: [Filter Chapter]) []
-    sections <- runDB $ selectList [SectionChapterId ==. toSqlKey chapterId] []
+    let uiChapters = [UIChapter { uiChapterId = chapterKeyToInt chId
+                   , uiChapterName = chapterName ch
+                   , uiChapterDescription = case chapterDescription ch of Nothing -> empty
+                                                                          Just txt -> txt
+                   , uiChapterSections = [UISection { uiSectionId = sectionKeyToInt seId
+                                                    , uiSectionName = case sectionName se of Nothing -> empty
+                                                                                             Just name -> name
+                                                    , uiSectionDescription = case sectionDescription se of Nothing -> empty
+                                                                                                           Just desc -> desc
+                                                    , uiSectionDone = seId `elem` doneSections} 
+                                                    | Entity seId se <- filter (\ s -> chId == sectionChapterId (entityVal s)) sections]
+                   , uiChapterProgress = calcChapterProgress chId sections doneSections } 
+                   | Entity chId ch <- chapters]
 
-    let sectionsTotal = length sections
-    $(logInfo) $ "Sectioins in current chapter: " ++ (pack (show sectionsTotal))
-    let sectionsDone = length . filter (\ x -> x `elem` doneSections) $ map entityKey sections
-    $(logInfo) $ "Greeting from getHomeR: " ++ (pack (show sectionsDone))
-    let tmp = (toRational 100)*(toRational sectionsDone)/(toRational sectionsTotal)
-    let sectionsPercent = show $ toInteger $ floor tmp
+
+    let totalSectionsCount = toRational $ sum $ map (\ c -> genericLength $ uiChapterSections c) uiChapters
+    let doneSectionsCount = toRational $ sum $ map (\ c -> genericLength $ filter (\ s -> uiSectionDone s) (uiChapterSections c)) uiChapters
+    let allSectionsPercent = toInteger $ floor $ 100 * doneSectionsCount / totalSectionsCount
+
     defaultLayout $(widgetFile "analysis")
+    where
+        chapterKeyToInt :: Key Chapter -> Int
+        chapterKeyToInt key = fromIntegral $ fromSqlKey key
+
+        sectionKeyToInt :: Key Section -> Int
+        sectionKeyToInt key = fromIntegral $ fromSqlKey key
+
+        calcChapterProgress :: Key Chapter -> [Entity Section] -> [Key Section] -> Int
+        calcChapterProgress chKey sects doneSections = do
+            let allSections = filter (\ s -> chKey == sectionChapterId (entityVal s)) sects
+            let allCount = toRational $ length allSections
+            let doneCount = toRational $ length $ filter (\ s -> (entityKey s) `elem` doneSections) allSections 
+            fromInteger $ toInteger $ floor (100 * doneCount/allCount) 
+
 --    where 
 -- convertFromPersistent [] = Nothing
 -- convertFromPersistent [PersistInt64 sum,PersistInt64 category] = do

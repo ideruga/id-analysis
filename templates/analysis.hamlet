@@ -1,48 +1,45 @@
-    $forall sect <- doneSections
-        <p>#{fromSqlKey sect}
-        
-    <p>Your current email: #{show emailAddr}
-    <p>Your current auth ID: #{show maid}
-        $maybe _ <- maid
-            <p>
-                <a href=@{AuthR LogoutR}>Logout
-        $nothing
-            <p>
-                <a href=@{AuthR LoginR}>Go to the login page
-    <h1>Analysis stats
-    <!--Contenedor-->
-    <div #topContainer .container>
-        <p>Total Progress:
-        <progress #mainProgress max=100 value=#{allSectionsPercent}>
-        <div>#{allSectionsPercent}
+    $maybe _ <- maid
+        <p>
+            <a href=@{AuthR LogoutR}>Logout
+    $nothing
+        <p>
+            <a href=@{AuthR LoginR}>Go to the login page
+    <div id="totalProgress">
+        <div class="progress-label">#{allSectionsPercent}
+    <script>$("#totalProgress").progressbar({ value: #{allSectionsPercent} });
 
-    <div #container .container>
-        $forall Entity chapterIdD chapter <- chapters
-            <input id="tab-#{fromSqlKey chapterIdD}" type="radio" onclick="location.href='#{fromSqlKey chapterIdD}'" name="tab-group" :chapterId == (fromSqlKey chapterIdD):checked>
-            <label for="tab-#{fromSqlKey chapterIdD}">
-                $if chapterId == (fromSqlKey chapterIdD)
-                    #{chapterName chapter} 
-                $else
-                    #{fromSqlKey chapterIdD}
-
-        <div id="content">
-            <div id="content-1">
-                <p> Chapter #{chapterId} progress:
-                <progress #chapterProgress max=100 value=#{sectionsPercent}>
-                <div>#{sectionsPercent}
-                <button #startTestButton onclick="loadNewTest()">Start Test
-                <button #showResultButton onclick="showResult()" hidden>Show Result
-                <div #sectionTest>
-                <div #sectionTestDescription>
-                <button #sectionsToggleButton onClick="toggleSections()">+
-                <div #sectionsDiv hidden>
-                    $forall Entity sectionIdD section <- sections
-                        <div>
-                            $maybe _ <- maid
-                                <input class=sectionName#{sectionDone section} id="section-#{fromSqlKey sectionIdD}" type=checkbox onclick="updateSectionStatus(#{fromSqlKey sectionIdD})" :(elem sectionIdD doneSections):checked>
-                            $nothing
-                                <p class=sectionName#{sectionDone section}>
-                            #{chapterId}.#{sectionNumber section}  
-                            $maybe name <- sectionName section
-                                - #{name} 
-           
+    <div id=mainLayout> 
+        <div class="ui-layout-center">
+            <UL>
+                $forall chapter <- uiChapters
+                    <LI>
+                        <a href="#tab_#{uiChapterId chapter}">
+                            <span>#{uiChapterId chapter}
+            <div class="ui-layout-content">
+                $forall chapter <- uiChapters
+                    <div id="tab_#{uiChapterId chapter}">
+                        <span>#{uiChapterName chapter} 
+                        <div id="progressbar_#{uiChapterId chapter}">
+                            <div class="progress-label">#{uiChapterProgress chapter}
+                        <script>$("#progressbar_#{uiChapterId chapter}").progressbar({ value: #{uiChapterProgress chapter} });
+                        <table id="sections_#{uiChapterId chapter}" class=display width="100%">
+                            <thead>
+                                <tr>
+                                    <th>-
+                                    <th>Section Id
+                                    <th>Section Name
+                                    <th>Section Description
+                                    <th>Edit Section
+                            <tbody>
+                            $forall section <- uiChapterSections chapter
+                                <tr>
+                                    <td>
+                                        <input id="section-#{uiSectionId section}" type=checkbox onclick="updateSectionStatus(#{uiSectionId section})" :uiSectionDone section:checked>
+                                    <td>#{uiSectionId section}
+                                    <td>#{uiSectionName section}
+                                    <td>#{uiSectionDescription section}
+                        <script>$("#sections_#{uiChapterId chapter}").DataTable({"paging":   false,
+                                                                                 "ordering": false,
+                                                                                 "filter":   false,
+                                                                                 "info":     false
+                                                                                } );

@@ -1,4 +1,6 @@
+
 $(document).ready(function() {
+    $(".ui-layout-center").tabs();
     lastSection = 0
     currentChapter = #{rawJS $ show chapterId}
 })
@@ -47,4 +49,17 @@ function loadNewTest() {
 function showResult() {
     $('#sectionTest').html(currentChapter + "." + lastSection + ": " + lastSectionName);
     $('#sectionTestDescription').html(lastSectionDescription);
+}
+
+function editSection(sectionId) {
+    $( "#sectionEditDialog").dialog({
+        buttons: {
+        "Delete all items": function() {
+          $( this ).dialog( "close" );
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
 }

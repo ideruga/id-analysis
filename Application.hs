@@ -39,7 +39,6 @@ import Handler.Common
 import Handler.Home
 import Handler.AnalysisStats
 import Handler.AnalysisTest
-import Handler.UpdateSectionStatus
 import Handler.CheckSection
 import Handler.UncheckSection
 import Web.Heroku (dbConnParams)
