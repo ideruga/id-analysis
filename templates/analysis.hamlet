@@ -25,7 +25,8 @@
                         <table id="sections_#{uiChapterId chapter}" class=display width="100%">
                             <thead>
                                 <tr>
-                                    <th>-
+                                    $maybe _ <- maid
+                                        <th>-
                                     <th>Section Id
                                     <th>Section Name
                                     <th>Section Description
@@ -33,8 +34,9 @@
                             <tbody>
                                 $forall section <- uiChapterSections chapter
                                     <tr>
-                                        <td>
-                                            <input id="section-#{uiSectionId section}" type=checkbox onclick="updateSectionStatus(#{uiSectionId section})" :uiSectionDone section:checked>
+                                        $maybe _ <- maid
+                                            <td>
+                                                <input id="section-#{uiSectionId section}" type=checkbox onclick="updateSectionStatus(#{uiSectionId section})" :uiSectionDone section:checked>
                                         <td>#{uiSectionId section}
                                         <td>#{uiSectionName section}
                                         <td>#{uiSectionDescription section}
