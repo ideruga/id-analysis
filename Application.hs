@@ -81,7 +81,7 @@ makeFoundation appSettings = do
 
     pool <- flip runLoggingT logFunc $ createPostgresqlPool
         pgUrl
-        (pgConnStr  $ appDatabaseConf appSettings) 
+        --(pgConnStr  $ appDatabaseConf appSettings) 
         (pgPoolSize $ appDatabaseConf appSettings)
 
     -- Perform database migration using our application's logging settings.
