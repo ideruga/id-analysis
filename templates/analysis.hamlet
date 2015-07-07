@@ -8,7 +8,7 @@
         <div class="progress-label">#{allSectionsPercent}
     <script>$("#totalProgress").progressbar({ value: #{allSectionsPercent} });
 
-    <div id=mainLayout> 
+    <div id=mainLayout>
         <div class="ui-layout-center">
             <UL>
                 $forall chapter <- uiChapters
@@ -18,7 +18,7 @@
             <div class="ui-layout-content">
                 $forall chapter <- uiChapters
                     <div id="tab_#{uiChapterId chapter}">
-                        <span>#{uiChapterName chapter} 
+                        <span>#{uiChapterName chapter}
                         <div id="progressbar_#{uiChapterId chapter}">
                             <div class="progress-label">#{uiChapterProgress chapter}
                         <script>$("#progressbar_#{uiChapterId chapter}").progressbar({ value: #{uiChapterProgress chapter} });
@@ -30,7 +30,8 @@
                                     <th>Section Id
                                     <th>Section Name
                                     <th>Section Description
-                                    <th>Edit Section
+                                    $maybe _ <- maid
+                                        <th>Edit Section
                             <tbody>
                                 $forall section <- uiChapterSections chapter
                                     <tr>
@@ -38,11 +39,16 @@
                                             <td>
                                                 <input id="section-#{uiSectionId section}" type=checkbox onclick="updateSectionStatus(#{uiSectionId section})" :uiSectionDone section:checked>
                                         <td>#{uiChapterId chapter}.#{uiSectionNumber section}
-                                        <td>#{uiSectionName section}
-                                        <td>#{uiSectionDescription section}
-                                        <td>-
+                                        <td id="sectionNameTd_#{uiSectionId section}">#{uiSectionName section}
+                                        <td id="sectionDescriptionTd_#{uiSectionId section}">#{uiSectionDescription section}
+                                        $maybe _ <- maid
+                                            <td>
+                                                <input id="edit_section-#{uiSectionId section}" type=button onclick="showDialog(#{uiSectionId section}, #{uiChapterId chapter}, #{uiSectionNumber section}, '#{uiSectionName section}', '#{uiSectionDescription section}')" value="Edit">
                         <script>$("#sections_#{uiChapterId chapter}").DataTable({"paging":   false,
                                                                                  "ordering": false,
                                                                                  "filter":   false,
                                                                                  "info":     false
-                                                                                } ).fnDraw();
+                                                                                } );
+    <div id="dialog" title="Title">
+        <input type=text #sectionNameInput>
+        <textarea cols=50 rows=4 wrap=soft #sectionDescriptionInput>

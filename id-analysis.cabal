@@ -26,6 +26,7 @@ library
                      Handler.AnalysisTest
                      Handler.CheckSection
                      Handler.UncheckSection
+                     Handler.UpdateSection
                      Helpers.Heroku
 
     if flag(dev) || flag(library-only)

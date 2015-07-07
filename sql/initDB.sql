@@ -41,7 +41,7 @@ insert into section (id, chapter_id, number, name, description) values (17, 1, 2
 insert into section (id, chapter_id, number, name, description) values (19, 1, 23, 'Definition of integral', 'Definition of an integral of a positive measurable simple function s on E, Lebesgue integral of a positive measurable function f on E');  
 insert into section (id, chapter_id, number, name, description) values (20, 1, 24, 'Five properties of a Lebesque integral', 'smaller function - smaller integral, smaller set - smaller integral, constant multiplier, zero function, zero-measure set, integral on a measurable set');  
 insert into section (id, chapter_id, number, name, description) values (21, 1, 25, 'Lebesgue integral is a measure, integral of a sum is a sum of integrals', null);  
-insert into section (id, chapter_id, number, name, description) values (22, 1, 26, 'Lebesgue\'s monotone convergence theorem', null);  
+insert into section (id, chapter_id, number, name, description) values (22, 1, 26, 'Lebesgue''s monotone convergence theorem', null);  
 insert into section (id, chapter_id, number, name, description) values (23, 1, 27, null, null);  
 insert into section (id, chapter_id, number, name, description) values (24, 1, 28, null, null);  
 insert into section (id, chapter_id, number, name, description) values (25, 1, 29, null, null);  

@@ -39,7 +39,7 @@ getAnalysisStatsR chapterId = do
     maid <- maybeAuthId
 
     let abc = True
-    sections <- runDB $ selectList ([] :: [Filter Section]) []
+    sections <- runDB $ selectList ([] :: [Filter Section]) [Asc SectionId]
 
     doneSectionsDB <- runDB $ selectList [DoneSectionsUserIdent ==. emailAddr] []
     let doneSections = map (doneSectionsSectionId . entityVal) doneSectionsDB

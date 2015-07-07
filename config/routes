@@ -11,3 +11,4 @@
 
 /analysis/checkSection/#Int CheckSectionR GET
 /analysis/uncheckSection/#Int UncheckSectionR GET
+/analysis/updateSection/#Int/#Text/#Text UpdateSectionR GET

@@ -1,8 +1,18 @@
-
 $(document).ready(function() {
     $(".ui-layout-center").tabs();
     lastSection = 0
     currentChapter = #{rawJS $ show chapterId}
+    $( "input[type=button], button" ).button();
+    editDialog = $("#dialog").dialog({
+                              autoOpen: false
+                            , width: 640
+                            , buttons: [{
+                                  text: "OK"
+                                , click: function() {
+                                    alert('test click');
+                                }
+                            }]
+    });
 })
 
 function toggleSections() {
@@ -51,15 +61,26 @@ function showResult() {
     $('#sectionTestDescription').html(lastSectionDescription);
 }
 
-function editSection(sectionId) {
-    $( "#sectionEditDialog").dialog({
-        buttons: {
-        "Delete all items": function() {
-          $( this ).dialog( "close" );
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
+function showDialog(sectionId, chapterNumber, sectionNumber, sectionName, sectionDescription) {
+    $('#dialog').dialog('option', 'title', 'Editing section ' + chapterNumber + '.' + sectionNumber);
+    $('#sectionNameInput').val(sectionName);
+    $('#sectionDescriptionInput').val(sectionDescription);
+    $('#dialog').dialog('option', 'buttons', [{
+          text: 'Save'
+        , click: function() {
+            var newSectionName = $('#sectionNameInput').val();
+            var newSectionDescription = $('#sectionDescriptionInput').val();
+            $.ajax({
+                url: "/analysis/updateSection/" + sectionId + "/" + newSectionName + "/" + newSectionDescription,
+                context: document.body
+            }).success(function(str) {
+                console.debug(str);
+                console.debug(newSectionDescription);
+                $('#sectionNameTd_' + sectionId).html(newSectionName);
+                $('#sectionDescriptionTd_' + sectionId).html(newSectionDescription);
+                $('#dialog').dialog('close');
+            });
         }
-      }
-    });
+    }]);
+    $('#dialog').dialog('open')
 }
