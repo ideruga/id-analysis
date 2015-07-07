@@ -61,26 +61,33 @@ function showResult() {
     $('#sectionTestDescription').html(lastSectionDescription);
 }
 
-function showDialog(sectionId, chapterNumber, sectionNumber, sectionName, sectionDescription) {
+function showDialog(sectionId, chapterNumber, sectionNumber) {
     $('#dialog').dialog('option', 'title', 'Editing section ' + chapterNumber + '.' + sectionNumber);
-    $('#sectionNameInput').val(sectionName);
-    $('#sectionDescriptionInput').val(sectionDescription);
+    $('#sectionNameInput').val($('#sectionNameTd_' + sectionId).html());
+    $('#sectionDescriptionInput').val($('#sectionDescriptionTd_' + sectionId).html());
     $('#dialog').dialog('option', 'buttons', [{
           text: 'Save'
         , click: function() {
             var newSectionName = $('#sectionNameInput').val();
             var newSectionDescription = $('#sectionDescriptionInput').val();
+            console.debug("/analysis/updateSection/" + sectionId + "/" + encodeURIComponent(newSectionName) + "/" + encodeURIComponent(newSectionDescription))
             $.ajax({
-                url: "/analysis/updateSection/" + sectionId + "/" + newSectionName + "/" + newSectionDescription,
+                url: "/analysis/updateSection/" + sectionId + "/" + encodeURIComponent(newSectionName) + "/" + encodeURIComponent(newSectionDescription),
                 context: document.body
             }).success(function(str) {
-                console.debug(str);
-                console.debug(newSectionDescription);
-                $('#sectionNameTd_' + sectionId).html(newSectionName);
-                $('#sectionDescriptionTd_' + sectionId).html(newSectionDescription);
+                $('#sectionNameTd_' + sectionId).text(newSectionName);
+                $('#sectionDescriptionTd_' + sectionId).text(newSectionDescription);
                 $('#dialog').dialog('close');
             });
         }
     }]);
     $('#dialog').dialog('open')
+}
+
+function htmlEncode(value){ 
+    if (value) {
+        return $('<div/>').text(value).html(); 
+    } else {
+        return '';
+    }
 }

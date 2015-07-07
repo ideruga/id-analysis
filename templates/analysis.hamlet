@@ -43,12 +43,12 @@
                                         <td id="sectionDescriptionTd_#{uiSectionId section}">#{uiSectionDescription section}
                                         $maybe _ <- maid
                                             <td>
-                                                <input id="edit_section-#{uiSectionId section}" type=button onclick="showDialog(#{uiSectionId section}, #{uiChapterId chapter}, #{uiSectionNumber section}, '#{uiSectionName section}', '#{uiSectionDescription section}')" value="Edit">
+                                                <input id="edit_section-#{uiSectionId section}" type=button onclick="showDialog(#{uiSectionId section}, #{uiChapterId chapter}, #{uiSectionNumber section})" value="Edit">
                         <script>$("#sections_#{uiChapterId chapter}").DataTable({"paging":   false,
                                                                                  "ordering": false,
                                                                                  "filter":   false,
                                                                                  "info":     false
                                                                                 } );
     <div id="dialog" title="Title">
-        <input type=text #sectionNameInput>
+        <input type=text size=51 #sectionNameInput>
         <textarea cols=50 rows=4 wrap=soft #sectionDescriptionInput>
