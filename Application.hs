@@ -41,6 +41,7 @@ import Handler.AnalysisStats
 import Handler.AnalysisTest
 import Handler.CheckSection
 import Handler.UncheckSection
+import Handler.UpdateSection
 import Web.Heroku (dbConnParams)
 import qualified Data.Text as T
 
