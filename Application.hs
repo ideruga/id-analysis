@@ -42,6 +42,7 @@ import Handler.AnalysisTest
 import Handler.CheckSection
 import Handler.UncheckSection
 import Handler.UpdateSection
+import Handler.UpdateSectionName
 import Web.Heroku (dbConnParams)
 import qualified Data.Text as T
 
@@ -82,7 +83,7 @@ makeFoundation appSettings = do
 
     pool <- flip runLoggingT logFunc $ createPostgresqlPool
         pgUrl
-        --(pgConnStr  $ appDatabaseConf appSettings) 
+        -- (pgConnStr  $ appDatabaseConf appSettings) 
         (pgPoolSize $ appDatabaseConf appSettings)
 
     -- Perform database migration using our application's logging settings.
