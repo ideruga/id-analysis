@@ -1,3 +1,4 @@
+    <div id="overlay">
     $maybe _ <- maid
         <p>
             <a href=@{AuthR LogoutR}>Logout
@@ -19,9 +20,11 @@
                 $forall chapter <- uiChapters
                     <div id="tab_#{uiChapterId chapter}">
                         <span>#{uiChapterName chapter}
-                        <div id="progressbar_#{uiChapterId chapter}">
-                            <div class="progress-label">#{uiChapterProgress chapter}
-                        <script>$("#progressbar_#{uiChapterId chapter}").progressbar({ value: #{uiChapterProgress chapter} });
+                        $maybe _ <- maid
+                            <div id="progressbar_#{uiChapterId chapter}">
+                                <div class="progress-label">#{uiChapterProgress chapter}
+                            <script>$("#progressbar_#{uiChapterId chapter}").progressbar({ value: #{uiChapterProgress chapter} });
+                            <input type=button #test_button_#{uiChapterId chapter} value=Test onclick="loadNewTest(#{uiChapterId chapter})">
                         <table id="sections_#{uiChapterId chapter}" class=display width="100%">
                             <thead>
                                 <tr>
@@ -52,3 +55,7 @@
     <div id="dialog" title="Title">
         <input type=text size=51 #sectionNameInput>
         <textarea cols=50 rows=4 wrap=soft #sectionDescriptionInput>
+    <div id="testDialog" title="Test">
+        <p #testSection>
+        <p #testTitle>
+        <p #testDescription>

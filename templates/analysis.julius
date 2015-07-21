@@ -3,7 +3,7 @@ $(document).ready(function() {
     lastSection = 0
     currentChapter = #{rawJS $ show chapterId}
     $( "input[type=button], button" ).button();
-    editDialog = $("#dialog").dialog({
+    $("#dialog").dialog({
                               autoOpen: false
                             , width: 640
                             , buttons: [{
@@ -12,6 +12,16 @@ $(document).ready(function() {
                                     alert('test click');
                                 }
                             }]
+    });
+    $("#testDialog").dialog({
+                          autoOpen: false
+                          , width: 640
+                          , buttons: [{
+                              text: "OK"
+                            , click: function() {
+                                alert('test click');
+                            }
+                          }]
     });
 })
 
@@ -39,27 +49,57 @@ function updateSectionStatus(sectionId) {
 }
 
 function loadNewTest() {
+    $("#overlay").show("fade", 300, function() { 
+        doLoadNewTest();
+    });
+}
+
+function doLoadNewTest() {
     $.ajax({
         url: "/analysis/test/" + currentChapter + "/" + lastSection + "/" + Math.random(),
         context: document.body,
         dataType: 'json'
     }).success(function(str) {
-        var result = $.parseJSON(str);
-        console.debug(result)
-        lastSection = result.sectionNumber
-        lastSectionName = result.sectionName
-        lastSectionDescription = result.sectionDescription
-        $('#sectionTest').html(currentChapter + "." + lastSection);
-        $('#sectionTestDescription').html('');
-        $('#startTestButton').html("Next Test")
-        $('#showResultButton').prop('hidden', null)
+        $("#overlay").hide("fade", 300, function(){
+            var result = $.parseJSON(str);
+            console.debug(result)
+            lastSection = result.sectionNumber
+            lastSectionName = result.sectionName
+            lastSectionDescription = result.sectionDescription
+            $('#testSection').html(currentChapter + "." + lastSection);
+            $('#testTitle').html('');
+            $('#testDescription').html('');
+            $('#testDialog').dialog('option', 'title', 'Test for chapter ' + currentChapter)
+            $('#testDialog').dialog('option', 'buttons', [{
+                text: 'Next Test'
+              , click: loadNewTest
+            }, {
+                text: 'Show Title'
+              , click: showTitle
+            }]);
+            $('#testDialog').dialog('open')
+        });
     });
 }
 
-function showResult() {
-    $('#sectionTest').html(currentChapter + "." + lastSection + ": " + lastSectionName);
-    $('#sectionTestDescription').html(lastSectionDescription);
-}
+function showDescription() {
+    $('#testDescription').html(lastSectionDescription);
+    $('#testDialog').dialog('option', 'buttons', [{
+        text: 'Next Test'
+      , click: loadNewTest
+    }]);
+ }
+
+function showTitle() {
+    $('#testTitle').html(lastSectionName);
+    $('#testDialog').dialog('option', 'buttons', [{
+        text: 'Next Test'
+      , click: loadNewTest
+    }, {
+        text: 'Show Description'
+      , click: showDescription
+    }]);
+ }
 
 function showDialog(sectionId, chapterNumber, sectionNumber) {
     $('#dialog').dialog('option', 'title', 'Editing section ' + chapterNumber + '.' + sectionNumber);
