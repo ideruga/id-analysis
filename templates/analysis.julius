@@ -36,6 +36,7 @@ function toggleSections() {
 }
 
 function updateSectionStatus(sectionId) {
+    $('input[type=checkbox]').prop('disabled',true);
     var url = "/analysis/uncheckSection/" + sectionId
     if ($('#section-' + sectionId).is(':checked')) {
         url = "/analysis/checkSection/" + sectionId
@@ -45,6 +46,7 @@ function updateSectionStatus(sectionId) {
         context: document.body,
         dataType: 'json'
     }).success(function(str) {
+        $('input[type=checkbox]').prop('disabled',false);
     });
 }
 
@@ -109,10 +111,19 @@ function showDialog(sectionId, chapterNumber, sectionNumber) {
           text: 'Save'
         , click: function() {
             var newSectionName = $('#sectionNameInput').val();
+            if (!$.trim(newSectionName)) {
+                alert('Title can not be empty!');
+                return;
+            }
             var newSectionDescription = $('#sectionDescriptionInput').val();
             console.debug("/analysis/updateSection/" + sectionId + "/" + encodeURIComponent(newSectionName) + "/" + encodeURIComponent(newSectionDescription))
+            var url = "/analysis/updateSection/" + sectionId + "/" + encodeURIComponent(newSectionName);
+            if ($.trim(newSectionDescription)) {
+                url += "/" + encodeURIComponent(newSectionDescription);
+            }
+
             $.ajax({
-                url: "/analysis/updateSection/" + sectionId + "/" + encodeURIComponent(newSectionName) + "/" + encodeURIComponent(newSectionDescription),
+                url: url,
                 context: document.body
             }).success(function(str) {
                 $('#sectionNameTd_' + sectionId).text(newSectionName);
