@@ -5,9 +5,10 @@
     $nothing
         <p>
             <a href=@{AuthR LoginR}>Go to the login page
-    <div id="totalProgress">
-        <div class="progress-label">#{allSectionsPercent}
-    <script>$("#totalProgress").progressbar({ value: #{allSectionsPercent} });
+    $maybe _ <- maid
+        <div id="totalProgress">
+            <div class="progress-label">#{allSectionsPercent}
+        <script>$("#totalProgress").progressbar({ value: #{allSectionsPercent} });
 
     <div id=mainLayout>
         <div class="ui-layout-center">
