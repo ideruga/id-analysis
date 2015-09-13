@@ -8,7 +8,7 @@ import Yesod.Auth.BrowserId
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
-import Data.Text
+import Data.Text (empty)
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -73,13 +73,12 @@ instance Yesod App where
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     -- Default to Authorized for now.
-    isAuthorized (UpdateSectionR _ _ _ ) _ = do
-        mauth <- maybeAuth
-        let emailAddr = case mauth of Nothing -> ""
-                                      Just (Entity _ user) -> userIdent user 
-        if emailAddr == "i.deruga@gmail.com" then return Authorized else return $ Unauthorized "Admin access only"
-         
-    isAuthorized _ _ = return Authorized
+    isAuthorized (UpdateSectionR _ _ _ ) _ = onlyAdminAuthorize
+    isAuthorized (UpdateSectionNameR _ _ ) _ = onlyAdminAuthorize
+    isAuthorized operation _ = do
+        $(logInfo) $ "Returning authorized for all operations" ++ (pack (show operation))
+        return Authorized
+
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
@@ -152,6 +151,13 @@ instance RenderMessage App FormMessage where
 unsafeHandler :: App -> Handler a -> IO a
 unsafeHandler = Unsafe.fakeHandlerGetLogger appLogger
 
+onlyAdminAuthorize = do
+    mauth <- maybeAuth
+    let emailAddr = case mauth of Nothing -> ""
+                                  Just (Entity _ user) -> userIdent user 
+    $(logInfo) $ "UpdateSectionR authentication: " ++ (pack (show emailAddr))
+    if emailAddr == "i.deruga@gmail.com" then return Authorized else return $ Unauthorized "Admin access only"
+         
 -- Note: Some functionality previously present in the scaffolding has been
 -- moved to documentation in the Wiki. Following are some hopefully helpful
 -- links:
