@@ -73,6 +73,12 @@ instance Yesod App where
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     -- Default to Authorized for now.
+    isAuthorized (UpdateSectionR _ _ _ ) _ = do
+        mauth <- maybeAuth
+        let emailAddr = case mauth of Nothing -> ""
+                                      Just (Entity _ user) -> userIdent user 
+        if emailAddr == "i.deruga@gmail.com" then return Authorized else return $ Unauthorized "Admin access only"
+         
     isAuthorized _ _ = return Authorized
 
     -- This function creates static content files in the static folder
