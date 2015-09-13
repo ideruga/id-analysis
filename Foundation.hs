@@ -156,8 +156,20 @@ onlyAdminAuthorize = do
     let emailAddr = case mauth of Nothing -> ""
                                   Just (Entity _ user) -> userIdent user 
     $(logInfo) $ "UpdateSectionR authentication: " ++ (pack (show emailAddr))
-    if emailAddr == "i.deruga@gmail.com" then return Authorized else return $ Unauthorized "Admin access only"
-         
+    hasAccess <- isAdmin
+    return $ if hasAccess then Authorized else Unauthorized "Admin access only"
+
+isAdmin = do
+    mauth <- maybeAuth
+    case mauth of Nothing -> return False 
+                  Just (Entity _ user) -> isAdminEmail $ userIdent user 
+
+isAdminEmail email = do
+    $(logInfo) $ "checking if email has admin rights: " ++ (pack (show email))
+    adminEmails <- runDB $ selectList [AdminEmailsEmail ==. email] []
+    return $ if length adminEmails == 1 then True else False
+
+             
 -- Note: Some functionality previously present in the scaffolding has been
 -- moved to documentation in the Wiki. Following are some hopefully helpful
 -- links:

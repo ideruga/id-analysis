@@ -4,6 +4,10 @@ delete from section;
 
 delete from chapter;
 
+delete from admin_emails;
+
+insert into admin_emails (email) values ('i.deruga@gmail.com');
+
 insert into chapter (id, name, description) values (1, 'Abstract Integration', 'Ex: abracadabra, 3, 5, ...');
 insert into chapter (id, name, description) values (2, 'Positive Borel Measures', 'Ex: abracadabra, 4, 6, ...');
 insert into chapter (id, name, description) values (3, 'L^p spaces', '');

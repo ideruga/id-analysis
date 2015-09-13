@@ -45,9 +45,12 @@
                                         <td>#{uiChapterId chapter}.#{uiSectionNumber section}
                                         <td id="sectionNameTd_#{uiSectionId section}">#{uiSectionName section}
                                         <td id="sectionDescriptionTd_#{uiSectionId section}">#{uiSectionDescription section}
-                                        $maybe _ <- maid
+                                        $if isadmin
                                             <td>
                                                 <input id="edit_section-#{uiSectionId section}" type=button onclick="showDialog(#{uiSectionId section}, #{uiChapterId chapter}, #{uiSectionNumber section})" value="Edit">
+                                        $else 
+                                            <td>
+                                                <p>
                         <script>$("#sections_#{uiChapterId chapter}").DataTable({"paging":   false,
                                                                                  "ordering": false,
                                                                                  "filter":   false,
