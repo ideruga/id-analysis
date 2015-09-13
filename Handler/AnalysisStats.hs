@@ -37,8 +37,9 @@ getAnalysisStatsR chapterId = do
                                   Just (Entity _ user) -> userIdent user 
     $(logInfo) $ "authentication: " ++ (pack (show emailAddr))
     maid <- maybeAuthId
-
-    let abc = True
+    
+    isadmin <- isAdmin
+    
     sections <- runDB $ selectList ([] :: [Filter Section]) [Asc SectionId]
 
     doneSectionsDB <- runDB $ selectList [DoneSectionsUserIdent ==. emailAddr] []
