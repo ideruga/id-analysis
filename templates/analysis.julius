@@ -1,5 +1,10 @@
 $(document).ready(function() {
-    $(".ui-layout-center").tabs();
+    $(".ui-layout-center").tabs({
+        activate: function(event, ui) {
+            currentChapter = ui.newTab[0].id.substring("tab_li_".length)
+            activateTestButton();
+        }
+    });
     lastSection = 0
     currentChapter = #{rawJS $ show chapterId}
     $( "input[type=button], button" ).button();
@@ -23,6 +28,7 @@ $(document).ready(function() {
                             }
                           }]
     });
+    activateTestButton();
 })
 
 function toggleSections() {
@@ -47,6 +53,7 @@ function updateSectionStatus(sectionId) {
         dataType: 'json'
     }).success(function(str) {
         $('input[type=checkbox]').prop('disabled',false);
+        activateTestButton();
     });
 }
 
@@ -64,7 +71,6 @@ function doLoadNewTest() {
     }).success(function(str) {
         $("#overlay").hide("fade", 300, function(){
             var result = $.parseJSON(str);
-            console.debug(result)
             lastSection = result.sectionNumber
             lastSectionName = result.sectionName
             lastSectionDescription = result.sectionDescription
@@ -116,7 +122,6 @@ function showDialog(sectionId, chapterNumber, sectionNumber) {
                 return;
             }
             var newSectionDescription = $('#sectionDescriptionInput').val();
-            console.debug("/analysis/updateSection/" + sectionId + "/" + encodeURIComponent(newSectionName) + "/" + encodeURIComponent(newSectionDescription))
             var url = "/analysis/updateSection/" + sectionId + "/" + encodeURIComponent(newSectionName);
             if ($.trim(newSectionDescription)) {
                 url += "/" + encodeURIComponent(newSectionDescription);
@@ -141,4 +146,8 @@ function htmlEncode(value){
     } else {
         return '';
     }
+}
+
+function activateTestButton() {
+    $("#test_button_" + currentChapter).prop('disabled', $("input[id^='section-']:checked", "#tab_" + currentChapter).length < 2);
 }

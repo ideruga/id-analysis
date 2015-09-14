@@ -14,7 +14,7 @@
         <div class="ui-layout-center">
             <UL>
                 $forall chapter <- uiChapters
-                    <LI>
+                    <LI id="tab_li_#{uiChapterId chapter}">
                         <a href="#tab_#{uiChapterId chapter}">
                             <span>#{uiChapterId chapter}
             <div class="ui-layout-content">
@@ -30,11 +30,11 @@
                             <thead>
                                 <tr>
                                     $maybe _ <- maid
-                                        <th>-
+                                        <th>&nbsp;
                                     <th>Section Id
                                     <th>Section Name
                                     <th>Section Description
-                                    $maybe _ <- maid
+                                    $if isadmin
                                         <th>Edit Section
                             <tbody>
                                 $forall section <- uiChapterSections chapter
@@ -48,9 +48,6 @@
                                         $if isadmin
                                             <td>
                                                 <input id="edit_section-#{uiSectionId section}" type=button onclick="showDialog(#{uiSectionId section}, #{uiChapterId chapter}, #{uiSectionNumber section})" value="Edit">
-                                        $else 
-                                            <td>
-                                                <p>
                         <script>$("#sections_#{uiChapterId chapter}").DataTable({"paging":   false,
                                                                                  "ordering": false,
                                                                                  "filter":   false,
