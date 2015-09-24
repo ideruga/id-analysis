@@ -57,6 +57,15 @@ function updateSectionStatus(sectionId) {
     });
 }
 
+function testButton() {
+    var testType = $("#test_type_" + currentChapter).val()
+    if (testType != "prob") {
+        lastSection = (testType.substring("section_".length) - 1)*10
+    }
+ 
+    loadNewTest()
+}
+
 function loadNewTest() {
     $("#overlay").show("fade", 300, function() { 
         doLoadNewTest();
@@ -64,8 +73,9 @@ function loadNewTest() {
 }
 
 function doLoadNewTest() {
-    $.ajax({
-        url: "/analysis/test/" + currentChapter + "/" + lastSection + "/" + Math.random(),
+   var testType = $("#test_type_" + currentChapter).val()
+   $.ajax({
+        url: "/analysis/test/" + testType + "/" + currentChapter + "/" + lastSection + "/" + Math.random(),
         context: document.body,
         dataType: 'json'
     }).success(function(str) {

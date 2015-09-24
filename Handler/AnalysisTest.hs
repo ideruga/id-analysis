@@ -1,5 +1,6 @@
 module Handler.AnalysisTest where
 
+import Data.Maybe
 import Import hiding (length, withManager)
 import System.Random
 import Data.Text hiding (pack, map, length, filter)
@@ -20,12 +21,7 @@ import Network.HTTP.Conduit    (RequestBody (RequestBodyLBS),
                                           requestBody, withManager)
 
 
-getAnalysisTestR :: Int -> Int -> Text -> Handler RepPlain
-getAnalysisTestR chapter currentSection rndText = do 
-    mauth <- maybeAuth
-    let emailAddr = case mauth of Nothing -> "nothing"
-                                  Just (Entity _ user) -> userIdent user 
-
+getProbabilisticTest emailAddr chapter currentSection rndText = do
     doneSectionsDB <- runDB $ selectList [DoneSectionsUserIdent ==. emailAddr] []
     let doneSections = map (doneSectionsSectionId . entityVal) doneSectionsDB
     
@@ -38,7 +34,32 @@ getAnalysisTestR chapter currentSection rndText = do
     let (Entity randomSectionId randomSection) = randomSectionEntity
     let randomSectionName = maybe "-" (\ x -> x) $ sectionName randomSection
     let randomSectionDescription = maybe "-" (\ x -> x) $ sectionDescription randomSection
-    return $ RepPlain . toContent $ show $ encode $ Test {newSectionName = randomSectionName, newSectionDescription = randomSectionDescription, newSectionNumber = fromIntegral $ sectionNumber randomSection, chapterNumber = chapter}
+    return Test {newSectionName = randomSectionName, newSectionDescription = randomSectionDescription, newSectionNumber = fromIntegral $ sectionNumber randomSection, chapterNumber = chapter}
+ 
+
+
+getSectionTest emailAddr chapter currentSection rndText = do
+    maybeSectionEntity <- runDB $ selectFirst [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionNumber >=. fromIntegral (currentSection + 1)] []
+
+    let sectionEntity = fromJust maybeSectionEntity
+    let section = entityVal sectionEntity
+    let selectedSectionName = maybe "-" (\ x -> x) $ sectionName section
+    let selectedSectionDescription = maybe "-" (\ x -> x) $ sectionDescription section
+    return Test {newSectionName = selectedSectionName, newSectionDescription = selectedSectionDescription, newSectionNumber = fromIntegral $ sectionNumber section, chapterNumber = chapter}
+ 
+
+
+getAnalysisTestR :: Text -> Int -> Int -> Text -> Handler RepPlain
+getAnalysisTestR testType chapter currentSection rndText = do 
+    mauth <- maybeAuth
+    let emailAddr = case mauth of Nothing -> "nothing"
+                                  Just (Entity _ user) -> userIdent user 
+    let res = if testType == "prob" then getProbabilisticTest emailAddr chapter currentSection rndText
+                                    else getSectionTest emailAddr chapter currentSection rndText
+    test <- res
+    return $ RepPlain . toContent $ show $ encode $ test
+
+ 
         --Nothing -> return RepPlain . toContent $ show $ encode $ Test {newSectionName = "woops", newSectionNumber = 0, chapterNumber = chapter} 
         
     --res <- runDB $ rawQuery "SELECT count(*) cnt, sum(CASE WHEN done THEN 1 ELSE 0 END) sm FROM SECTION" [] $$ CL.map (convertFromPersistent) =$ CL.consume

@@ -25,7 +25,13 @@
                             <div id="progressbar_#{uiChapterId chapter}">
                                 <div class="progress-label">#{uiChapterProgress chapter}
                             <script>$("#progressbar_#{uiChapterId chapter}").progressbar({ value: #{uiChapterProgress chapter} });
-                            <input type=button #test_button_#{uiChapterId chapter} value=Test onclick="loadNewTest(#{uiChapterId chapter})">
+                            <input type=button #test_button_#{uiChapterId chapter} value=Test onclick="testButton()">
+                            <select #test_type_#{uiChapterId chapter}>
+                                <option value="prob">probabilistic
+                                <option value="section_1">questions 1-10
+                                <option value="section_2">questions 11-20
+                                <option value="section_3">questions 21-30
+                                <option value="section_4">questions 31-41
                         <table id="sections_#{uiChapterId chapter}" class=display width="100%">
                             <thead>
                                 <tr>

@@ -7,7 +7,7 @@
 / HomeR GET POST
 /analysis/#Int64 AnalysisStatsR GET
 
-/analysis/test/#Int/#Int/#Text AnalysisTestR GET
+/analysis/test/#Text/#Int/#Int/#Text AnalysisTestR GET
 
 /analysis/checkSection/#Int CheckSectionR GET
 /analysis/uncheckSection/#Int UncheckSectionR GET
