@@ -25,7 +25,7 @@ getProbabilisticTest emailAddr chapter currentSection rndText = do
     doneSectionsDB <- runDB $ selectList [DoneSectionsUserIdent ==. emailAddr] []
     let doneSections = map (doneSectionsSectionId . entityVal) doneSectionsDB
     
-    sections <- runDB $ selectList [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionNumber !=. fromIntegral currentSection] []
+    sections <- runDB $ selectList [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionNumber !=. fromIntegral currentSection] [Asc SectionId]
     let selectedSections = filter (\ x -> (entityKey x) `elem` doneSections) $ sections
 
     let rndDouble = read (Data.Text.unpack rndText) :: Double
@@ -39,7 +39,7 @@ getProbabilisticTest emailAddr chapter currentSection rndText = do
 
 
 getSectionTest emailAddr chapter currentSection rndText = do
-    maybeSectionEntity <- runDB $ selectFirst [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionNumber >=. fromIntegral (currentSection + 1)] []
+    maybeSectionEntity <- runDB $ selectFirst [SectionChapterId ==. toSqlKey (fromIntegral chapter), SectionNumber >=. fromIntegral (currentSection + 1)] [Asc SectionId]
 
     let sectionEntity = fromJust maybeSectionEntity
     let section = entityVal sectionEntity
